@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import classNames from "classnames/bind";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleXmark, faSpinner, faMagnifyingGlass, faEllipsisVertical, faEarthAsia, faCircleQuestion, faKeyboard, faCloudUpload, faUser, faCoins, faGear, faSignOut } from "@fortawesome/free-solid-svg-icons";
+import { faCircleXmark, faSpinner, faMagnifyingGlass, faEllipsisVertical, faEarthAsia, faCircleQuestion, faKeyboard, faUser, faCoins, faGear, faSignOut } from "@fortawesome/free-solid-svg-icons";
 import Tippy from '@tippyjs/react';
 import HeadlessTippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
@@ -14,6 +14,8 @@ import { Wrapper as PopperWrapper } from '~/components/Popper'
 import AccountItem from "~/components/AccountItem";
 import Menu from "~/components/Popper/Menu";
 import MenuItem from "~/components/Popper/Menu/MenuItem";
+import { UploadIcon } from "~/components/Icons";
+import Image from "~/components/Image";
 
 const cx = classNames.bind(styles)
 
@@ -129,7 +131,7 @@ function Header() {
                     <>
                         <Tippy delay={[0, 200]} trigger="click" content="Upload video" placement="bottom">
                             <button className={cx('action-btn')}>
-                                <FontAwesomeIcon icon={faCloudUpload}></FontAwesomeIcon>
+                                <UploadIcon></UploadIcon>
                             </button>
                         </Tippy>
                     </>
@@ -145,7 +147,10 @@ function Header() {
                     onChange={handleMenuChange}
                 >
                     {currentUser ? (
-                        <img className={cx('user-avatar')} alt="Nguyen Van A" src="https://p16-sign-va.tiktokcdn.com/tos-useast2a-avt-0068-giso/572344d5452b317fd93cb6e2ce12ebfc~c5_100x100.jpeg?x-expires=1675609200&x-signature=xCz7MViuMh7OMhTWBp75uIRCthQ%3D"></img>
+                        <Image 
+                            className={cx('user-avatar')} 
+                            alt="Nguyen Van A" 
+                            src="https://p16-sign-va.tiktokcdn.com/tos-useast2a-avt-0068-giso/219e56290d96b5c4dae4c7750fb94a5b~c5_100x100.jpeg?x-expires=1676296800&x-signature=ZqG1mpN04XCLCKaqjRkV4ow0MLk%3D" />
                     ) : (
                         <button className={cx('more-btn')}>
                             <FontAwesomeIcon icon={faEllipsisVertical}></FontAwesomeIcon>
