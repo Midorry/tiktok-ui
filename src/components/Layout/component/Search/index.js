@@ -6,78 +6,88 @@ import classNames from 'classnames/bind';
 import { Wrapper as PopperWrapper } from '~/components/Popper';
 import AccountItem from '~/components/AccountItem';
 import { SearchIcon } from '~/components/Icons';
+import { useDebounce } from '~/hooks';
 import styles from './Search.module.scss';
 
-const cx = classNames.bind(styles)
+const cx = classNames.bind(styles);
 
-function Search() {    
+function Search() {
     const [searchValue, setSearchValue] = useState('');
-    const [searchResult, setSearchResult] = useState([])
-    const [showResult, setShowResult] = useState(true)
+    const [searchResult, setSearchResult] = useState([]);
+    const [showResult, setShowResult] = useState(true);
+    const [loading, setLoading] = useState(false);
 
-    const inputRef = useRef()
+    const debounced = useDebounce(searchValue, 500);
+
+    const inputRef = useRef();
 
     useEffect(() => {
-        setTimeout(() => {
-            setSearchResult([1, 1, 1, 1])
-        }, 0)
-    }, [])
+        if (!debounced.trim()) {
+            setSearchResult([]);
+            return;
+        }
+
+        setLoading(true);
+
+        fetch(`https://tiktok.fullstack.edu.vn/api/users/search?q=${encodeURIComponent(debounced)}&type=less`)
+            .then((res) => res.json())
+            .then((res) => {
+                setSearchResult(res.data);
+                setLoading(false);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
+    }, [debounced]);
 
     const handleClear = () => {
-            setSearchValue('');
-            setSearchResult([])
-            inputRef.current.focus()
+        setSearchValue('');
+        setSearchResult([]);
+        inputRef.current.focus();
     };
 
     const handleHideResult = () => {
         setShowResult(false);
-    }
+    };
 
     return (
         <HeadlessTippy
             interactive
             visible={showResult && searchResult.length > 0}
             render={(attrs) => (
-                <div className={cx('search-results')} tabIndex='-1' {...attrs}>
+                <div className={cx('search-results')} tabIndex="-1" {...attrs}>
                     <PopperWrapper>
-                        <h4 className={cx('search-title')}>
-                            Account
-                        </h4>
-                        <AccountItem />
-                        <AccountItem />
-                        <AccountItem />
-                        <AccountItem />
+                        <h4 className={cx('search-title')}>Account</h4>
+                        {searchResult.map((result) => (
+                            <AccountItem key={result.id} data={result} />
+                        ))}
                     </PopperWrapper>
                 </div>
             )}
             onClickOutside={handleHideResult}
         >
             <div className={cx('search')}>
-                <input 
+                <input
                     ref={inputRef}
                     value={searchValue}
-                    placeholder="Search account and videos" 
-                    spellCheck={false} 
+                    placeholder="Search account and videos"
+                    spellCheck={false}
                     onChange={(e) => setSearchValue(e.target.value)}
-                    onFocus = {() => setShowResult(true)}
-                >
-                </input>
-                {!!searchValue && (
-                    <button 
-                        className={cx('clear')} 
-                        onClick={handleClear}
-                    >
+                    onFocus={() => setShowResult(true)}
+                ></input>
+                {!!searchValue && !loading && (
+                    <button className={cx('clear')} onClick={handleClear}>
                         <FontAwesomeIcon icon={faCircleXmark} />
                     </button>
                 )}
-                {/* <FontAwesomeIcon className={cx('spinner')} icon={faSpinner} /> */}
+                {loading && <FontAwesomeIcon className={cx('spinner')} icon={faSpinner} />}
 
                 <button className={cx('search-btn')}>
                     <SearchIcon></SearchIcon>
                 </button>
             </div>
         </HeadlessTippy>
-    )
+    );
 }
 
 export default Search;

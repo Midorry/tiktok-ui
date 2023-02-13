@@ -54,7 +54,21 @@
     right: calc(var(--search-width) + 16px);
     top: 50%;
     transform: translateY(-50%);
+    cursor: pointer;
     color: rgba(22, 24, 35, 0.34);
+}
+
+.spinner {
+    animation: spin 0.5s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        rotate: translateY(-50%) 0;
+    }
+    to {
+        transform: translateY(-50%) rotate(360deg);
+    }
 }
 
 .search-btn {
